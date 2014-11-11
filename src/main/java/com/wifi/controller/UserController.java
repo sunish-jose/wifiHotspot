@@ -1,6 +1,7 @@
 package com.wifi.controller;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -37,5 +38,5 @@ public class UserController extends BaseController {
 		baseService.createEntity(user);
 		return "redirect:/"+user.getFullName();
 	}
-
+	
 }
