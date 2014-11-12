@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Hotspot Marker</title>
+    <style>
+      html, body, #map-canvas {
+        height: 90%;
+        margin: 0px;
+        padding: 2px
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyB1iDWwILQgAD0cof3JMQrFhBKcvW1I3jA"></script>
+    <script>
+
+
+var beaches;
+var latitude;
+var longitude;
+
+// The following example creates complex markers to indicate beaches near
+// Sydney, NSW, Australia. Note that the anchor is set to
+// (0,32) to correspond to the base of the flagpole.
+
+  var contentString = '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">BSG Wireless</h1>'+
+      '<div id="bodyContent">'+
+      '<p><b>BSG Wireless</b>, BSG Wireless is a subsidiary of BSG' +
+      'BSG was established in 1988 and headquartered in San Antonio, Texas '+
+      'For over 25 years, BSG has provided financial clearing solutions'+
+      ' that maximize the value of telecommunication services'+
+      'BSG is the largest third-party clearing house for'+
+      ' LEC billing in the United States, '+
+      ', and BSG has long-standing relationships with more than '+
+      '500 Telco partners including companies such as '+
+      'AT&T, Verizon, Cox, CenturyLink and Frontier '+
+      '</p>'+
+      '<p>BSG Wireless, <a href="http://www.bsgwireless.com/index.php">'+
+      'http://www.bsgwireless.com/index.php</a> '+
+      '</p>'+
+      '</div>'+
+      '</div>';
+
+var marker;
+
+function initialize() {
+  var mapOptions = {
+    zoom: 10,
+    center: new google.maps.LatLng(51.514288,-0.097666)
+  }
+  var map = new google.maps.Map(document.getElementById('map-canvas'),  mapOptions);
+
+  var infowindow = new google.maps.InfoWindow({
+      content: contentString
+  });
+
+
+  setMarkers(map, beaches);
+
+  google.maps.event.addListener(marker, 'click', function() {
+    infowindow.open(map,marker);
+  });
+}
+
+       function GetLocation() {
+            var geocoder = new google.maps.Geocoder();
+            var address = document.getElementById("txtAddress").value;
+            geocoder.geocode({ 'address': address }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    latitude = results[0].geometry.location.lat();
+                    longitude = results[0].geometry.location.lng();
+			var _location = ['Test Location', latitude, longitude, 6];
+			beaches.push(_location);
+ 			//alert("Latitude: " + latitude + "\nLongitude: " + longitude);
+			//alert(beaches);
+			initialize();
+                    //alert("Latitude: " + latitude + "\nLongitude: " + longitude);
+                } else {
+                    alert("Request failed.")
+                }
+            });
+
+
+        }
+
+/**
+ * Data for the markers consisting of a name, a LatLng and a zIndex for
+ * the order in which these markers should display on top of each
+ * other.
+ */
+beaches = [];
+
+function setMarkers(map, locations) {
+  // Add markers to the map
+
+  // Marker sizes are expressed as a Size of X,Y
+  // where the origin of the image (0,0) is located
+  // in the top left of the image.
+
+  // Origins, anchor positions and coordinates of the marker
+  // increase in the X direction to the right and in
+  // the Y direction down.
+  var image = {
+    url: 'images/beachflag.png',
+    // This marker is 20 pixels wide by 32 pixels tall.
+    size: new google.maps.Size(20, 32),
+    // The origin for this image is 0,0.
+    origin: new google.maps.Point(0,0),
+    // The anchor for this image is the base of the flagpole at 0,32.
+    anchor: new google.maps.Point(0, 32)
+  };
+  // Shapes define the clickable region of the icon.
+  // The type defines an HTML &lt;area&gt; element 'poly' which
+  // traces out a polygon as a series of X,Y points. The final
+  // coordinate closes the poly by connecting to the first
+  // coordinate.
+  var shape = {
+      coords: [1, 1, 1, 20, 18, 20, 18 , 1],
+      type: 'poly'
+  };
+  for (var i = 0; i < locations.length; i++) {
+    var beach = locations[i];
+    var myLatLng = new google.maps.LatLng(beach[1], beach[2]);
+    marker = new google.maps.Marker({
+        position: myLatLng,
+        map: map,
+        shape: shape,
+        title: beach[0],
+        zIndex: beach[3]
+    });
+  }
+}
+
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+<div>
+<h3>Add an address</h3>
+<input type='text' name='txtAddress' id='txtAddress'><br>
+<input type='button' name='add' value='add' onClick='GetLocation()'>
+</div>
+  </body>
+</html>
