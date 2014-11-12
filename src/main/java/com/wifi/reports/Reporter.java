@@ -14,7 +14,6 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
-import org.hibernate.mapping.Map;
 
 import com.wifi.reports.bean.ReportDataBean;
 
@@ -27,7 +26,7 @@ public class Reporter {
 		 
 		JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(dataBeanList);
 		 
-		HashMap parameters = new HashMap();
+		HashMap<String, Object> parameters = new HashMap<>();
 		 
 		JasperDesign jasperDesign = JRXmlLoader.load(inputStream);
 		JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
